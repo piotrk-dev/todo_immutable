@@ -1,4 +1,4 @@
-import React, { useState, useEffet } from "react";
+import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import uuid from "uuid";
 import { List, Map } from "immutable";
@@ -14,16 +14,11 @@ const TodoItem = ({ item, editTodo, removeTodo }) => {
     <div className="box">
       <span>{item.get("text")}</span>
       {" | "}
-      <span>
-        {date && `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`}
-      </span>
+      <span>{date && `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`}</span>
       {" | "}
       <div>
         <div>
-          <button
-            className="button"
-            onClick={() => editTodo(item.get("id"), newValue)}
-          >
+          <button className="button" onClick={() => editTodo(item.get("id"), newValue)}>
             Edit
           </button>
           <input
@@ -55,22 +50,12 @@ const Todo = ({ todos, addTodo, editTodo, removeTodo }) => {
       <div className="box field">
         <label className="label">Todo</label>
         <div className="control">
-          <input
-            type="text"
-            className="input"
-            placeholder="Add todo"
-            onKeyDown={handleSubmit}
-          />
+          <input type="text" className="input" placeholder="Add todo" onKeyDown={handleSubmit} />
         </div>
       </div>
       <ul>
         {todos.map(item => (
-          <TodoItem
-            key={item.get("id")}
-            item={item}
-            editTodo={editTodo}
-            removeTodo={removeTodo}
-          />
+          <TodoItem key={item.get("id")} item={item} editTodo={editTodo} removeTodo={removeTodo} />
         ))}
       </ul>
     </section>
@@ -85,9 +70,9 @@ const actions = {
         id: uuid.v4(),
         text,
         data: {
-          timestamp: new Date().getTime()
-        }
-      }
+          timestamp: new Date().getTime(),
+        },
+      },
     };
   },
   editTodo(id, text) {
@@ -95,23 +80,23 @@ const actions = {
       type: "EDIT_TODO",
       payload: {
         id,
-        text
-      }
+        text,
+      },
     };
   },
   removeTodo(id) {
     return {
       type: "REMOVE_TODO",
       payload: {
-        id
-      }
+        id,
+      },
     };
-  }
+  },
 };
 
 const mapStateToProps = state => {
   return {
-    todos: state
+    todos: state,
   };
 };
 
@@ -119,7 +104,7 @@ const mapDispatchToProps = dispatch => {
   return {
     addTodo: text => dispatch(actions.addTodo(text)),
     editTodo: (id, text) => dispatch(actions.editTodo(id, text)),
-    removeTodo: id => dispatch(actions.removeTodo(id))
+    removeTodo: id => dispatch(actions.removeTodo(id)),
   };
 };
 
@@ -129,7 +114,6 @@ const reducer = function(todos = List(), action) {
       return todos.push(Map(action.payload));
     case "EDIT_TODO":
       const index = todos.findIndex(t => t.get("id") === action.payload.id);
-      console.log("index of edited todo", index);
       return todos
         .setIn([index, "text"], action.payload.text)
         .setIn([index, "data", "timestamp"], new Date().getTime());
@@ -150,5 +134,5 @@ ReactDOM.render(
   <Provider store={store}>
     <App />
   </Provider>,
-  rootElement
+  rootElement,
 );
