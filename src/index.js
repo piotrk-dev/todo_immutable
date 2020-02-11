@@ -10,8 +10,6 @@ const TodoItem = ({ item, editTodo, removeTodo }) => {
   const [newValue, setNewValue] = useState("");
   const date = new Date(item.getIn(["data", "timestamp"]));
 
-  console.log("i", item);
-
   return (
     <div className="box">
       <span>{item.get("text")}</span>
@@ -130,8 +128,11 @@ const reducer = function(todos = List(), action) {
     case "ADD_TODO":
       return todos.push(Map(action.payload));
     case "EDIT_TODO":
-      const index = todos.findIndex(t => t.id === action.payload.id);
-      return todos.setIn([index, "text"], action.payload.text);
+      const index = todos.findIndex(t => t.get("id") === action.payload.id);
+      console.log("index of edited todo", index);
+      return todos
+        .setIn([index, "text"], action.payload.text)
+        .setIn([index, "data", "timestamp"], new Date().getTime());
     case "REMOVE_TODO":
       return todos.filter(todo => todo.get("id") !== action.payload.id);
     default:
