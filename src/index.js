@@ -130,11 +130,10 @@ const reducer = function(todos = List(), action) {
     case "ADD_TODO":
       return todos.push(Map(action.payload));
     case "EDIT_TODO":
-      console.log("edit todo", action.payload);
-      return todos;
+      const index = todos.findIndex(t => t.id === action.payload.id);
+      return todos.setIn([index, "text"], action.payload.text);
     case "REMOVE_TODO":
-      console.log("remove todo", action.payload);
-      return todos;
+      return todos.filter(todo => todo.get("id") !== action.payload.id);
     default:
       return todos;
   }
