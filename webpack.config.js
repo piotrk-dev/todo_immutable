@@ -1,10 +1,11 @@
+/*eslint-disable */
 const path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 const env = process.env.ENV;
 
 module.exports = {
-  entry: "./src/index.js",
+  entry: "./src/index.tsx",
   output: {
     path: path.resolve(__dirname, "dist"),
     filename: "bundle.js",

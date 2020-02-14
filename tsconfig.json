@@ -2,11 +2,15 @@
   "compilerOptions": {
     "sourceMap": true,
     "noImplicitAny": false,
+    "strictNullChecks": false,
     "target": "es6",
     "jsx": "react",
+    "module": "commonjs",
     "moduleResolution": "node",
     "lib": ["es2015", "dom", "dom.iterable"],
-    "outFile": "dist/bundle.js"
+    "outDir": "dist",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true
   },
   "include": ["src"],
   "exclude": ["node_modules"]

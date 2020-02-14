@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import uuid from "uuid";
 import { List, Map } from "immutable";
@@ -18,7 +18,7 @@ const TodoItem = ({ item, editTodo, removeTodo }) => {
       {" | "}
       <div>
         <div>
-          <button className="button" onClick={() => editTodo(item.get("id"), newValue)}>
+          <button type="button" className="button" onClick={() => editTodo(item.get("id"), newValue)}>
             Edit
           </button>
           <input
@@ -28,7 +28,7 @@ const TodoItem = ({ item, editTodo, removeTodo }) => {
             onChange={e => setNewValue(e.target.value)}
           />
         </div>
-        <button className="button" onClick={() => removeTodo(item.get("id"))}>
+        <button type="button" className="button" onClick={() => removeTodo(item.get("id"))}>
           Remove
         </button>
       </div>
@@ -48,10 +48,12 @@ const Todo = ({ todos, addTodo, editTodo, removeTodo }) => {
   return (
     <section className="section">
       <div className="box field">
-        <label className="label">Todo</label>
-        <div className="control">
-          <input type="text" className="input" placeholder="Add todo" onKeyDown={handleSubmit} />
-        </div>
+        <label className="label" htmlFor="add-todo">
+          Todo
+          <div className="control">
+            <input type="text" className="input" placeholder="Add todo" id="add-todo" onKeyDown={handleSubmit} />
+          </div>
+        </label>
       </div>
       <ul>
         {todos.map(item => (
@@ -108,7 +110,9 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-const reducer = function(todos = List(), action) {
+type TodosListType = List<Map<any, any>>;
+
+const reducer = function(todos: TodosListType = List(), action) {
   switch (action.type) {
     case "ADD_TODO":
       return todos.push(Map(action.payload));
