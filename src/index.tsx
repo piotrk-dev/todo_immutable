@@ -4,6 +4,7 @@ import uuid from "uuid";
 import { List, Map } from "immutable";
 import { Provider, connect } from "react-redux";
 import { createStore } from "redux";
+import cn from "classnames";
 import "./styles.scss";
 
 const TodoItem = ({ item, editTodo, removeTodo }) => {
@@ -11,23 +12,35 @@ const TodoItem = ({ item, editTodo, removeTodo }) => {
   const date = new Date(item.getIn(["data", "timestamp"]));
 
   return (
-    <div className="box">
-      <span>{item.get("text")}</span>
-      {" | "}
-      <span>{date && `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`}</span>
-      {" | "}
-      <div>
-        <div>
-          <button type="button" className="button" onClick={() => editTodo(item.get("id"), newValue)}>
+    <div className={cn("box", "columns")}>
+      <div className="column">
+        <span>{item.get("text")}</span>
+        {" | "}
+        <span>{date && `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`}</span>
+        {" | "}
+      </div>
+      <div className="column">
+        <div className="columns">
+          <button
+            type="button"
+            className={cn("button", "column")}
+            onClick={() => {
+              editTodo(item.get("id"), newValue);
+              setNewValue("");
+            }}
+          >
             Edit
           </button>
           <input
             name="edit-todo"
             className="input"
             placeholder="Edit todo"
+            value={newValue}
             onChange={e => setNewValue(e.target.value)}
           />
         </div>
+      </div>
+      <div className="column">
         <button type="button" className="button" onClick={() => removeTodo(item.get("id"))}>
           Remove
         </button>
@@ -36,12 +49,13 @@ const TodoItem = ({ item, editTodo, removeTodo }) => {
   );
 };
 
-const Todo = ({ todos, addTodo, editTodo, removeTodo }) => {
+export const Todo = ({ todos, addTodo, editTodo, removeTodo }) => {
   const handleSubmit = event => {
     const text = event.target.value;
     if (event.keyCode === 13 && text.length > 0) {
       addTodo(text);
-      event.target.value = "";
+      const el = event.target;
+      el.value = "";
     }
   };
 
@@ -104,7 +118,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    addTodo: text => dispatch(actions.addTodo(text)),
+    addTodo: (text: string) => dispatch(actions.addTodo(text)),
     editTodo: (id, text) => dispatch(actions.editTodo(id, text)),
     removeTodo: id => dispatch(actions.removeTodo(id)),
   };
@@ -112,19 +126,23 @@ const mapDispatchToProps = dispatch => {
 
 type TodosListType = List<Map<any, any>>;
 
-const reducer = function(todos: TodosListType = List(), action) {
+const reducer = function TodoReducer(todos: TodosListType = List(), action) {
   switch (action.type) {
-    case "ADD_TODO":
+    case "ADD_TODO": {
       return todos.push(Map(action.payload));
-    case "EDIT_TODO":
+    }
+    case "EDIT_TODO": {
       const index = todos.findIndex(t => t.get("id") === action.payload.id);
       return todos
         .setIn([index, "text"], action.payload.text)
         .setIn([index, "data", "timestamp"], new Date().getTime());
-    case "REMOVE_TODO":
+    }
+    case "REMOVE_TODO": {
       return todos.filter(todo => todo.get("id") !== action.payload.id);
-    default:
+    }
+    default: {
       return todos;
+    }
   }
 };
 
