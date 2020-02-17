@@ -1,6 +1,6 @@
-/*eslint-disable */
-const path = require("path");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+import path from "path";
+import MiniCssExtractPlugin from "mini-css-extract-plugin";
+import HtmlWebpackPlugin from "html-webpack-plugin";
 
 const env = process.env.ENV;
 
@@ -8,7 +8,7 @@ module.exports = {
   entry: "./src/index.tsx",
   output: {
     path: path.resolve(__dirname, "dist"),
-    filename: "bundle.js",
+    filename: "bundle.[contenthash].js",
     publicPath: "/",
   },
   module: {
@@ -18,6 +18,7 @@ module.exports = {
         exclude: /node_modules/,
         use: {
           loader: "ts-loader",
+          // loader: "babel-loader"
         },
       },
       {
@@ -25,6 +26,9 @@ module.exports = {
         exclude: /node_modules/,
         use: {
           loader: "babel-loader",
+          options: {
+            cacheDirectory: true,
+          },
         },
       },
       {
@@ -44,6 +48,7 @@ module.exports = {
     new MiniCssExtractPlugin({
       filename: "styles.css",
     }),
+    new HtmlWebpackPlugin(),
   ],
   devServer: {
     contentBase: path.join(__dirname, "dist"),
